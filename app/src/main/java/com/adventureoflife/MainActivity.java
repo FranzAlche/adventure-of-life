@@ -6,25 +6,46 @@ import android.graphics.Color;
 import android.graphics.drawable.GradientDrawable;
 import android.view.Gravity;
 import android.view.View;
+import android.view.Window;
+import android.view.WindowInsets;
 import android.widget.*;
+import android.media.AudioManager;
+import android.media.ToneGenerator;
 
 public class MainActivity extends Activity {
+
     final int BG = Color.rgb(3,7,13);
     final int PANEL = Color.rgb(8,18,29);
-    final int PANEL2 = Color.rgb(11,27,41);
     final int CYAN = Color.rgb(0,229,255);
     final int TEXT = Color.rgb(231,250,255);
     final int MUTED = Color.rgb(125,165,180);
-    final int VIOLET = Color.rgb(151,90,255);
+    final int GOLD = Color.rgb(255,215,90);
+    final int BORDER = Color.rgb(30,91,112);
 
     LinearLayout root, content, nav;
     TextView title, cold;
+    ToneGenerator tone;
     int page = 0;
 
-    @Override public void onCreate(Bundle b) {
+    @Override
+    public void onCreate(Bundle b) {
         super.onCreate(b);
-        buildShell();
-        showPage(0);
+
+        tone = new ToneGenerator(AudioManager.STREAM_NOTIFICATION, 70);
+
+        buildOpening();
+    }
+
+    @Override
+    protected void onDestroy() {
+        if (tone != null) tone.release();
+        super.onDestroy();
+    }
+
+    void clickSound() {
+        if (tone != null) {
+            tone.startTone(ToneGenerator.TONE_PROP_BEEP2, 70);
+        }
     }
 
     TextView tv(String s, float sp, int color) {
@@ -48,14 +69,84 @@ public class MainActivity extends Activity {
         LinearLayout c = new LinearLayout(this);
         c.setOrientation(LinearLayout.VERTICAL);
         c.setPadding(18,16,18,16);
-        c.setBackground(bg(PANEL, Color.rgb(30,91,112)));
+        c.setBackground(bg(PANEL, BORDER));
 
         LinearLayout.LayoutParams p =
             new LinearLayout.LayoutParams(-1,-2);
-
         p.setMargins(0,0,0,12);
         c.setLayoutParams(p);
         return c;
+    }
+
+    Button actionButton(String text, int textSize) {
+        Button b = new Button(this);
+        b.setText(text);
+        b.setTextSize(textSize);
+        b.setTextColor(TEXT);
+        b.setAllCaps(false);
+        b.setGravity(Gravity.CENTER);
+        b.setPadding(8, 0, 8, 0);
+        b.setBackground(bg(Color.rgb(7,24,36), BORDER));
+        b.setOnClickListener(v -> clickSound());
+        return b;
+    }
+
+    void buildOpening() {
+        LinearLayout opening = new LinearLayout(this);
+        opening.setOrientation(LinearLayout.VERTICAL);
+        opening.setGravity(Gravity.CENTER);
+        opening.setPadding(28, 40, 28, 30);
+        opening.setBackgroundColor(BG);
+
+        TextView small = tv("SYSTEM INITIALIZATION", 12, CYAN);
+        small.setGravity(Gravity.CENTER);
+        small.setLetterSpacing(.18f);
+
+        TextView main = tv("ADVENTURE\nOF LIFE", 34, TEXT);
+        main.setGravity(Gravity.CENTER);
+        main.setTypeface(null, android.graphics.Typeface.BOLD);
+        main.setLetterSpacing(.08f);
+
+        TextView system = tv("S Y S T E M", 18, CYAN);
+        system.setGravity(Gravity.CENTER);
+        system.setLetterSpacing(.28f);
+
+        TextView line = tv(
+            "\nREALITY > FANTASY\n" +
+            "LEVEL = PROOF\n" +
+            "FAILURE = DATA",
+            12, MUTED);
+        line.setGravity(Gravity.CENTER);
+
+        Space space1 = new Space(this);
+        Space space2 = new Space(this);
+
+        Button start = actionButton("▶  START SYSTEM", 17);
+        start.setTextColor(CYAN);
+        start.setBackground(bg(Color.rgb(6,35,48), CYAN));
+
+        start.setOnClickListener(v -> {
+            clickSound();
+            buildShell();
+            showPage(0);
+        });
+
+        opening.addView(small);
+        opening.addView(main);
+        opening.addView(system);
+
+        opening.addView(space1,
+            new LinearLayout.LayoutParams(1, 0, 1));
+
+        opening.addView(line);
+
+        opening.addView(space2,
+            new LinearLayout.LayoutParams(1, 0, .55f));
+
+        opening.addView(start,
+            new LinearLayout.LayoutParams(-1, 64));
+
+        setContentView(opening);
     }
 
     void buildShell() {
@@ -65,15 +156,17 @@ public class MainActivity extends Activity {
 
         LinearLayout top = new LinearLayout(this);
         top.setGravity(Gravity.CENTER_VERTICAL);
-        top.setPadding(16,12,14,10);
+        top.setPadding(16, 12, 14, 10);
 
         LinearLayout left = new LinearLayout(this);
         left.setOrientation(LinearLayout.VERTICAL);
 
         TextView kicker =
-            tv("ADVENTURE OF LIFE // SYSTEM", 10, CYAN);
+            tv("ADVENTURE OF LIFE // SYSTEM", 12, CYAN);
+        kicker.setLetterSpacing(.06f);
 
-        title = tv("SYSTEM CORE", 20, TEXT);
+        title = tv("SYSTEM CORE", 25, TEXT);
+        title.setTypeface(null, android.graphics.Typeface.BOLD);
 
         left.addView(kicker);
         left.addView(title);
@@ -81,14 +174,11 @@ public class MainActivity extends Activity {
         top.addView(left,
             new LinearLayout.LayoutParams(0,-2,1));
 
-        cold = tv("◉  COLD\nUNKNOWN", 11,
-            Color.rgb(255,215,90));
-
+        cold = tv("◉  COLD\nUNKNOWN", 11, GOLD);
         cold.setGravity(Gravity.CENTER);
         cold.setPadding(10,4,10,4);
         cold.setBackground(
-            bg(Color.rgb(38,31,8),
-               Color.rgb(150,120,35)));
+            bg(Color.rgb(38,31,8), Color.rgb(150,120,35)));
 
         top.addView(cold,
             new LinearLayout.LayoutParams(92,56));
@@ -99,7 +189,7 @@ public class MainActivity extends Activity {
 
         content = new LinearLayout(this);
         content.setOrientation(LinearLayout.VERTICAL);
-        content.setPadding(14,4,14,90);
+        content.setPadding(14, 6, 14, 104);
 
         scroll.addView(content);
 
@@ -107,7 +197,7 @@ public class MainActivity extends Activity {
             new LinearLayout.LayoutParams(-1,0,1));
 
         nav = new LinearLayout(this);
-        nav.setPadding(8,7,8,8);
+        nav.setPadding(8, 6, 8, 8);
         nav.setGravity(Gravity.CENTER);
         nav.setBackgroundColor(Color.rgb(5,12,20));
 
@@ -119,28 +209,32 @@ public class MainActivity extends Activity {
             "◉\nVIKA"
         };
 
-        for (int i=0;i<labels.length;i++) {
-            final int idx=i;
+        for (int i = 0; i < labels.length; i++) {
+            final int idx = i;
 
-            Button b = new Button(this);
-            b.setText(labels[i]);
-            b.setTextSize(10);
-            b.setTextColor(TEXT);
-            b.setAllCaps(false);
-            b.setPadding(2,0,2,0);
+            Button b = actionButton(labels[i], 10);
+            b.setOnClickListener(v -> {
+                clickSound();
+                showPage(idx);
+            });
 
-            b.setBackground(
-                bg(Color.rgb(7,24,36),
-                   Color.rgb(31,89,108)));
-
-            b.setOnClickListener(v -> showPage(idx));
-
-            nav.addView(b,
-                new LinearLayout.LayoutParams(0,62,1));
+            LinearLayout.LayoutParams bp =
+                new LinearLayout.LayoutParams(0, 58, 1);
+            bp.setMargins(3, 0, 3, 0);
+            nav.addView(b, bp);
         }
 
         root.addView(nav);
+
+        // Keep the navigation bar above Android's system area.
+        root.setOnApplyWindowInsetsListener((v, insets) -> {
+            int bottom = insets.getSystemWindowInsetBottom();
+            nav.setPadding(8, 6, 8, 8 + bottom);
+            return insets;
+        });
+
         setContentView(root);
+        root.requestApplyInsets();
     }
 
     void add(View v) {
@@ -148,14 +242,14 @@ public class MainActivity extends Activity {
     }
 
     TextView heading(String s) {
-        TextView h = tv(s, 11, CYAN);
+        TextView h = tv(s, 12, CYAN);
         h.setLetterSpacing(.12f);
-        h.setPadding(2,8,2,10);
+        h.setPadding(2, 8, 2, 10);
         return h;
     }
 
     void showPage(int p) {
-        page=p;
+        page = p;
         content.removeAllViews();
 
         String[] names = {
@@ -168,42 +262,37 @@ public class MainActivity extends Activity {
 
         title.setText(names[p]);
 
-        if(p==0) home();
-        if(p==1) status();
-        if(p==2) quests();
-        if(p==3) skill();
-        if(p==4) vika();
+        if (p == 0) home();
+        if (p == 1) status();
+        if (p == 2) quests();
+        if (p == 3) skill();
+        if (p == 4) vika();
     }
 
     void home() {
-        LinearLayout hero=card();
+        LinearLayout hero = card();
         hero.setGravity(Gravity.CENTER);
 
-        TextView crest=tv("◇\nAZ",30,CYAN);
-        crest.setGravity(Gravity.CENTER);
-        crest.setPadding(0,8,0,8);
-        hero.addView(crest);
-
-        TextView n=tv("FRANZ ALCHE",24,TEXT);
+        TextView n = tv("FRANZ ALCHE", 26, TEXT);
         n.setGravity(Gravity.CENTER);
-        hero.addView(n);
+        n.setTypeface(null, android.graphics.Typeface.BOLD);
 
-        TextView sub=tv(
+        TextView sub = tv(
             "ELITE ZERO HOUR  •  RANK E",
-            12,MUTED);
-
+            13, MUTED);
         sub.setGravity(Gravity.CENTER);
-        hero.addView(sub);
 
+        hero.addView(n);
+        hero.addView(sub);
         add(hero);
 
-        LinearLayout prog=card();
+        LinearLayout prog = card();
         prog.addView(heading("PLAYER CORE"));
-        prog.addView(tv("LEVEL   02",17,TEXT));
-        prog.addView(tv("EXP     87 / 150",14,MUTED));
+        prog.addView(tv("LEVEL   02", 18, TEXT));
+        prog.addView(tv("EXP     87 / 150", 14, MUTED));
 
         ProgressBar pb =
-            new ProgressBar(this,null,
+            new ProgressBar(this, null,
                 android.R.attr.progressBarStyleHorizontal);
 
         pb.setMax(150);
@@ -214,46 +303,50 @@ public class MainActivity extends Activity {
 
         prog.addView(tv(
             "Alchemist  /  Assassin  /  Trader [Novice]",
-            12,MUTED));
+            12, MUTED));
 
         add(prog);
 
-        LinearLayout rules=card();
+        LinearLayout vikaPanel = card();
+        vikaPanel.addView(heading("VIKA SYSTEM LINK"));
+        vikaPanel.addView(tv(
+            "CORE STATUS: LOCAL\n" +
+            "COMMAND ENGINE: STANDBY\n" +
+            "ONLINE BRAIN: PLANNED",
+            13, TEXT));
 
+        add(vikaPanel);
+
+        LinearLayout rules = card();
         rules.addView(heading("SYSTEM PRINCIPLES"));
-
         rules.addView(tv(
             "REALITY > FANTASY\n" +
             "LEVEL = PROOF\n" +
             "CLAIM ≠ REAL\n" +
             "FAILURE = DATA\n" +
             "REAL STAT = MEASURED",
-            13,TEXT));
-
+            13, TEXT));
         add(rules);
     }
 
     void status() {
-        LinearLayout c=card();
+        LinearLayout c = card();
 
         c.addView(heading("PLAYER"));
-        c.addView(tv("FRANZ ALCHE",24,TEXT));
-
+        c.addView(tv("FRANZ ALCHE", 24, TEXT));
         c.addView(tv(
             "ELITE ZERO HOUR  •  RANK E  •  LEVEL 02",
-            12,MUTED));
-
+            12, MUTED));
         c.addView(tv(
             "Alchemist / Assassin / Trader [Novice]",
-            13,TEXT));
+            13, TEXT));
 
         add(c);
 
-        LinearLayout s=card();
-
+        LinearLayout s = card();
         s.addView(heading("REAL STAT"));
 
-        String[] rows={
+        String[] rows = {
             "STR    ?    UNMEASURED",
             "VIT    ?    UNMEASURED",
             "AGI    ?    UNMEASURED",
@@ -266,96 +359,86 @@ public class MainActivity extends Activity {
             "FOC    ?    UNMEASURED"
         };
 
-        for(String r:rows)
-            s.addView(tv(r,13,TEXT));
+        for (String r : rows)
+            s.addView(tv(r, 13, TEXT));
 
         s.addView(tv(
             "\nRULE: unmeasured ≠ 0",
-            11,MUTED));
+            11, MUTED));
 
         add(s);
     }
 
     void quests() {
-        LinearLayout q=card();
-
+        LinearLayout q = card();
         q.addView(heading("ACTIVE QUEST POOL"));
 
-        String[] qs={
-            "🔴 OPERATION: RENTENIR ZERO\n" +
-            "Debt principal Rp3.000.000 → Rp0",
-
-            "⚗️ WHY DO WE AGE?\n" +
-            "Elixir Research ~80% • Node 03",
-
-            "🌿 HERBAL HUNT #01\n" +
-            "Identify candidate plant with evidence",
-
-            "📈 OB REJECTION BACKTEST #10\n" +
-            "Progress 9/20 • 3W / 5L / 1BE",
-
-            "🧠 ORDER & DISCIPLINE\n" +
-            "Mind Quest • 🟡",
-
-            "🚭 SMOKE BREAKER\n" +
-            "30-minute interval • Quest Mode"
+        String[] qs = {
+            "🔴 OPERATION: RENTENIR ZERO\nDebt principal Rp3.000.000 → Rp0",
+            "⚗️ WHY DO WE AGE?\nElixir Research ~80% • Node 03",
+            "🌿 HERBAL HUNT #01\nIdentify candidate plant with evidence",
+            "📈 OB REJECTION BACKTEST #11\nNext backtest • 10/20 completed",
+            "🧠 ORDER & DISCIPLINE\nMind Quest • 🟡",
+            "🚭 SMOKE BREAKER\n30-minute interval • Quest Mode"
         };
 
-        for(String x:qs) {
-            TextView t=tv(x,13,TEXT);
-            t.setPadding(4,10,4,10);
+        for (String x : qs) {
+            TextView t = tv(x, 13, TEXT);
+            t.setPadding(4, 10, 4, 10);
             q.addView(t);
         }
 
         q.addView(tv(
             "\nQUEST BOARD = POOL\n" +
             "Execution is managed through Quest Management / Active Rotation.",
-            11,MUTED));
+            11, MUTED));
 
         add(q);
     }
 
     void skill() {
-        LinearLayout s=card();
-
+        LinearLayout s = card();
         s.addView(heading("SKILL TREE"));
 
-        String[] rows={
+        String[] rows = {
             "🟢 Risk Management",
             "🟢 OB Rejection Analysis Lv.1",
             "🟢 Alchemist Ingredient Knowledge Lv.1",
-            "🟡 Backtesting Mastery — 9/20",
+            "🟡 Backtesting Mastery — 10/20",
             "🔒 Breakout & Retest",
             "🟡 Discipline",
             "🟡 Patience",
             "🟡 Failure Analysis"
         };
 
-        for(String r:rows)
-            s.addView(tv(r,14,TEXT));
+        for (String r : rows)
+            s.addView(tv(r, 14, TEXT));
 
         s.addView(tv(
             "\nSP  0\n\n" +
             "LEARN → PRACTICE → EVIDENCE → TEST → UNLOCK",
-            12,MUTED));
+            12, MUTED));
 
         add(s);
     }
 
     void vika() {
-        LinearLayout c=card();
+        LinearLayout c = card();
         c.setGravity(Gravity.CENTER_HORIZONTAL);
 
-        c.addView(tv("◉",52,CYAN));
-        c.addView(tv("VIKA",28,TEXT));
+        c.addView(tv("◉", 52, CYAN));
+
+        TextView v = tv("VIKA", 30, TEXT);
+        v.setTypeface(null, android.graphics.Typeface.BOLD);
+        c.addView(v);
 
         c.addView(tv(
             "SYSTEM / GAME MASTER",
-            12,CYAN));
+            12, CYAN));
 
         c.addView(tv(
             "\nCORE STATUS: LOCAL PLACEHOLDER",
-            13,MUTED));
+            13, MUTED));
 
         c.addView(tv(
             "\nPlanned modules:\n" +
@@ -365,8 +448,8 @@ public class MainActivity extends Activity {
             "• Evidence Review\n" +
             "• Progress Tracking\n" +
             "• Quest Guidance",
-            13,TEXT));
+            13, TEXT));
 
         add(c);
     }
-}
+                         }
