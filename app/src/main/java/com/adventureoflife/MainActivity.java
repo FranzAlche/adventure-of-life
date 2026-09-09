@@ -29,15 +29,19 @@ public class MainActivity extends Activity {
 
     TextView tv(String s, float sp, int color) {
         TextView t = new TextView(this);
-        t.setText(s); t.setTextSize(sp); t.setTextColor(color);
+        t.setText(s);
+        t.setTextSize(sp);
+        t.setTextColor(color);
         t.setPadding(0, 3, 0, 3);
         return t;
     }
 
     GradientDrawable bg(int color, int stroke) {
         GradientDrawable g = new GradientDrawable();
-        g.setColor(color); g.setCornerRadius(18);
-        g.setStroke(1, stroke); return g;
+        g.setColor(color);
+        g.setCornerRadius(18);
+        g.setStroke(1, stroke);
+        return g;
     }
 
     LinearLayout card() {
@@ -45,8 +49,12 @@ public class MainActivity extends Activity {
         c.setOrientation(LinearLayout.VERTICAL);
         c.setPadding(18,16,18,16);
         c.setBackground(bg(PANEL, Color.rgb(30,91,112)));
-        LinearLayout.LayoutParams p = new LinearLayout.LayoutParams(-1,-2);
-        p.setMargins(0,0,0,12); c.setLayoutParams(p);
+
+        LinearLayout.LayoutParams p =
+            new LinearLayout.LayoutParams(-1,-2);
+
+        p.setMargins(0,0,0,12);
+        c.setLayoutParams(p);
         return c;
     }
 
@@ -61,44 +69,83 @@ public class MainActivity extends Activity {
 
         LinearLayout left = new LinearLayout(this);
         left.setOrientation(LinearLayout.VERTICAL);
-        TextView kicker = tv("ADVENTURE OF LIFE // SYSTEM", 10, CYAN);
-        title = tv("SYSTEM CORE", 20, TEXT);
-        left.addView(kicker); left.addView(title);
-        top.addView(left, new LinearLayout.LayoutParams(0,-2,1));
 
-        cold = tv("◉  COLD\nUNKNOWN", 11, Color.rgb(255,215,90));
+        TextView kicker =
+            tv("ADVENTURE OF LIFE // SYSTEM", 10, CYAN);
+
+        title = tv("SYSTEM CORE", 20, TEXT);
+
+        left.addView(kicker);
+        left.addView(title);
+
+        top.addView(left,
+            new LinearLayout.LayoutParams(0,-2,1));
+
+        cold = tv("◉  COLD\nUNKNOWN", 11,
+            Color.rgb(255,215,90));
+
         cold.setGravity(Gravity.CENTER);
         cold.setPadding(10,4,10,4);
-        cold.setBackground(bg(Color.rgb(38,31,8), Color.rgb(150,120,35)));
-        top.addView(cold, new LinearLayout.LayoutParams(92,56));
+        cold.setBackground(
+            bg(Color.rgb(38,31,8),
+               Color.rgb(150,120,35)));
+
+        top.addView(cold,
+            new LinearLayout.LayoutParams(92,56));
+
         root.addView(top);
 
         ScrollView scroll = new ScrollView(this);
+
         content = new LinearLayout(this);
         content.setOrientation(LinearLayout.VERTICAL);
         content.setPadding(14,4,14,90);
+
         scroll.addView(content);
-        root.addView(scroll, new LinearLayout.LayoutParams(-1,0,1));
+
+        root.addView(scroll,
+            new LinearLayout.LayoutParams(-1,0,1));
 
         nav = new LinearLayout(this);
         nav.setPadding(8,7,8,8);
         nav.setGravity(Gravity.CENTER);
         nav.setBackgroundColor(Color.rgb(5,12,20));
-        String[] labels = {"⌂\nSYSTEM","♢\nSTATUS","✦\nQUEST","⚚\nSKILL","◉\nVIKA"};
+
+        String[] labels = {
+            "⌂\nSYSTEM",
+            "♢\nSTATUS",
+            "✦\nQUEST",
+            "⚚\nSKILL",
+            "◉\nVIKA"
+        };
+
         for (int i=0;i<labels.length;i++) {
             final int idx=i;
+
             Button b = new Button(this);
-            b.setText(labels[i]); b.setTextSize(10); b.setTextColor(TEXT);
-            b.setAllCaps(false); b.setPadding(2,0,2,0);
-            b.setBackground(bg(Color.rgb(7,24,36), Color.rgb(31,89,108)));
+            b.setText(labels[i]);
+            b.setTextSize(10);
+            b.setTextColor(TEXT);
+            b.setAllCaps(false);
+            b.setPadding(2,0,2,0);
+
+            b.setBackground(
+                bg(Color.rgb(7,24,36),
+                   Color.rgb(31,89,108)));
+
             b.setOnClickListener(v -> showPage(idx));
-            nav.addView(b, new LinearLayout.LayoutParams(0,62,1));
+
+            nav.addView(b,
+                new LinearLayout.LayoutParams(0,62,1));
         }
+
         root.addView(nav);
         setContentView(root);
     }
 
-    void add(View v) { content.addView(v); }
+    void add(View v) {
+        content.addView(v);
+    }
 
     TextView heading(String s) {
         TextView h = tv(s, 11, CYAN);
@@ -108,8 +155,17 @@ public class MainActivity extends Activity {
     }
 
     void showPage(int p) {
-        page=p; content.removeAllViews();
-        String[] names={"SYSTEM CORE","STATUS WINDOW","QUEST BOARD","SKILL TREE","VIKA AI CORE"};
+        page=p;
+        content.removeAllViews();
+
+        String[] names = {
+            "SYSTEM CORE",
+            "STATUS WINDOW",
+            "QUEST BOARD",
+            "SKILL TREE",
+            "VIKA AI CORE"
+        };
+
         title.setText(names[p]);
 
         if(p==0) home();
@@ -120,75 +176,197 @@ public class MainActivity extends Activity {
     }
 
     void home() {
-        LinearLayout hero=card(); hero.setGravity(Gravity.CENTER);
-        TextView crest=tv("◇\nAZ",30,CYAN); crest.setGravity(Gravity.CENTER);
-        crest.setPadding(0,8,0,8); hero.addView(crest);
-        TextView n=tv("FRANZ ALCHE",24,TEXT); n.setGravity(Gravity.CENTER); hero.addView(n);
-        TextView sub=tv("ELITE ZERO HOUR  •  RANK E",12,MUTED); sub.setGravity(Gravity.CENTER); hero.addView(sub);
+        LinearLayout hero=card();
+        hero.setGravity(Gravity.CENTER);
+
+        TextView crest=tv("◇\nAZ",30,CYAN);
+        crest.setGravity(Gravity.CENTER);
+        crest.setPadding(0,8,0,8);
+        hero.addView(crest);
+
+        TextView n=tv("FRANZ ALCHE",24,TEXT);
+        n.setGravity(Gravity.CENTER);
+        hero.addView(n);
+
+        TextView sub=tv(
+            "ELITE ZERO HOUR  •  RANK E",
+            12,MUTED);
+
+        sub.setGravity(Gravity.CENTER);
+        hero.addView(sub);
+
         add(hero);
 
         LinearLayout prog=card();
         prog.addView(heading("PLAYER CORE"));
         prog.addView(tv("LEVEL   02",17,TEXT));
         prog.addView(tv("EXP     87 / 150",14,MUTED));
-        ProgressBar pb=new ProgressBar(this,null,android.R.attr.progressBarStyleHorizontal);
-        pb.setMax(150); pb.setProgress(87); prog.addView(pb,new LinearLayout.LayoutParams(-1,12));
-        prog.addView(tv("Alchemist  /  Assassin  /  Trader [Novice]",12,MUTED));
+
+        ProgressBar pb =
+            new ProgressBar(this,null,
+                android.R.attr.progressBarStyleHorizontal);
+
+        pb.setMax(150);
+        pb.setProgress(87);
+
+        prog.addView(pb,
+            new LinearLayout.LayoutParams(-1,12));
+
+        prog.addView(tv(
+            "Alchemist  /  Assassin  /  Trader [Novice]",
+            12,MUTED));
+
         add(prog);
 
-        LinearLayout rules=card(); rules.addView(heading("SYSTEM PRINCIPLES"));
-        rules.addView(tv("REALITY > FANTASY\nLEVEL = PROOF\nCLAIM ≠ REAL\nFAILURE = DATA\nREAL STAT = MEASURED",13,TEXT));
+        LinearLayout rules=card();
+
+        rules.addView(heading("SYSTEM PRINCIPLES"));
+
+        rules.addView(tv(
+            "REALITY > FANTASY\n" +
+            "LEVEL = PROOF\n" +
+            "CLAIM ≠ REAL\n" +
+            "FAILURE = DATA\n" +
+            "REAL STAT = MEASURED",
+            13,TEXT));
+
         add(rules);
     }
 
     void status() {
-        LinearLayout c=card(); c.addView(heading("PLAYER"));
+        LinearLayout c=card();
+
+        c.addView(heading("PLAYER"));
         c.addView(tv("FRANZ ALCHE",24,TEXT));
-        c.addView(tv("ELITE ZERO HOUR  •  RANK E  •  LEVEL 02",12,MUTED));
-        c.addView(tv("Alchemist / Assassin / Trader [Novice]",13,TEXT));
+
+        c.addView(tv(
+            "ELITE ZERO HOUR  •  RANK E  •  LEVEL 02",
+            12,MUTED));
+
+        c.addView(tv(
+            "Alchemist / Assassin / Trader [Novice]",
+            13,TEXT));
+
         add(c);
 
-        LinearLayout s=card(); s.addView(heading("REAL STAT"));
-        String[] rows={"STR    ?    UNMEASURED","VIT    ?    UNMEASURED","AGI    ?    UNMEASURED",
-                "DEX    ?    UNMEASURED","BAL    ?    UNMEASURED","MOB    ?    UNMEASURED",
-                "INT    OBSERVED","WIS    ?    UNMEASURED","PER    ?    UNMEASURED","FOC    ?    UNMEASURED"};
-        for(String r:rows) s.addView(tv(r,13,TEXT));
-        s.addView(tv("\nRULE: unmeasured ≠ 0",11,MUTED)); add(s);
+        LinearLayout s=card();
+
+        s.addView(heading("REAL STAT"));
+
+        String[] rows={
+            "STR    ?    UNMEASURED",
+            "VIT    ?    UNMEASURED",
+            "AGI    ?    UNMEASURED",
+            "DEX    ?    UNMEASURED",
+            "BAL    ?    UNMEASURED",
+            "MOB    ?    UNMEASURED",
+            "INT    OBSERVED",
+            "WIS    ?    UNMEASURED",
+            "PER    ?    UNMEASURED",
+            "FOC    ?    UNMEASURED"
+        };
+
+        for(String r:rows)
+            s.addView(tv(r,13,TEXT));
+
+        s.addView(tv(
+            "\nRULE: unmeasured ≠ 0",
+            11,MUTED));
+
+        add(s);
     }
 
     void quests() {
-        LinearLayout q=card(); q.addView(heading("ACTIVE QUEST POOL"));
+        LinearLayout q=card();
+
+        q.addView(heading("ACTIVE QUEST POOL"));
+
         String[] qs={
-            "🔴 OPERATION: RENTENIR ZERO\nDebt principal Rp3.000.000 → Rp0",
-            "⚗️ WHY DO WE AGE?\nElixir Research ~80% • Node 03",
-            "🌿 HERBAL HUNT #01\nIdentify candidate plant with evidence",
-            "📈 OB REJECTION BACKTEST #10\nProgress 9/20 • 3W / 5L / 1BE",
-            "🧠 ORDER & DISCIPLINE\nMind Quest • 🟡",
-            "🚭 SMOKE BREAKER\n30-minute interval • Quest Mode"
+            "🔴 OPERATION: RENTENIR ZERO\n" +
+            "Debt principal Rp3.000.000 → Rp0",
+
+            "⚗️ WHY DO WE AGE?\n" +
+            "Elixir Research ~80% • Node 03",
+
+            "🌿 HERBAL HUNT #01\n" +
+            "Identify candidate plant with evidence",
+
+            "📈 OB REJECTION BACKTEST #10\n" +
+            "Progress 9/20 • 3W / 5L / 1BE",
+
+            "🧠 ORDER & DISCIPLINE\n" +
+            "Mind Quest • 🟡",
+
+            "🚭 SMOKE BREAKER\n" +
+            "30-minute interval • Quest Mode"
         };
+
         for(String x:qs) {
-            TextView t=tv(x,13,TEXT); t.setPadding(4,10,4,10); q.addView(t);
+            TextView t=tv(x,13,TEXT);
+            t.setPadding(4,10,4,10);
+            q.addView(t);
         }
-        q.addView(tv("\nQUEST BOARD = POOL\nExecution is managed through Quest Management / Active Rotation.",11,MUTED));
+
+        q.addView(tv(
+            "\nQUEST BOARD = POOL\n" +
+            "Execution is managed through Quest Management / Active Rotation.",
+            11,MUTED));
+
         add(q);
     }
 
     void skill() {
-        LinearLayout s=card(); s.addView(heading("SKILL TREE"));
-        String[] rows={"🟢 Risk Management","🟢 OB Rejection Analysis Lv.1","🟢 Alchemist Ingredient Knowledge Lv.1",
-                "🟡 Backtesting Mastery — 9/20","🔒 Breakout & Retest","🟡 Discipline","🟡 Patience","🟡 Failure Analysis"};
-        for(String r:rows) s.addView(tv(r,14,TEXT));
-        s.addView(tv("\nSP  0\n\nLEARN → PRACTICE → EVIDENCE → TEST → UNLOCK",12,MUTED));
+        LinearLayout s=card();
+
+        s.addView(heading("SKILL TREE"));
+
+        String[] rows={
+            "🟢 Risk Management",
+            "🟢 OB Rejection Analysis Lv.1",
+            "🟢 Alchemist Ingredient Knowledge Lv.1",
+            "🟡 Backtesting Mastery — 9/20",
+            "🔒 Breakout & Retest",
+            "🟡 Discipline",
+            "🟡 Patience",
+            "🟡 Failure Analysis"
+        };
+
+        for(String r:rows)
+            s.addView(tv(r,14,TEXT));
+
+        s.addView(tv(
+            "\nSP  0\n\n" +
+            "LEARN → PRACTICE → EVIDENCE → TEST → UNLOCK",
+            12,MUTED));
+
         add(s);
     }
 
     void vika() {
-        LinearLayout c=card(); c.setGravity(Gravity.CENTER_HORIZONTAL);
+        LinearLayout c=card();
+        c.setGravity(Gravity.CENTER_HORIZONTAL);
+
         c.addView(tv("◉",52,CYAN));
         c.addView(tv("VIKA",28,TEXT));
-        c.addView(tv("SYSTEM / GAME MASTER",12,CYAN));
-        c.addView(tv("\nCORE STATUS: LOCAL PLACEHOLDER",13,MUTED));
-        c.addView(tv("\nPlanned modules:\n• OpenAI Brain\n• Voice\n• Smart Signal\n• Evidence Review\n• Progress Tracking\n• Quest Guidance",13,TEXT));
+
+        c.addView(tv(
+            "SYSTEM / GAME MASTER",
+            12,CYAN));
+
+        c.addView(tv(
+            "\nCORE STATUS: LOCAL PLACEHOLDER",
+            13,MUTED));
+
+        c.addView(tv(
+            "\nPlanned modules:\n" +
+            "• OpenAI Brain\n" +
+            "• Voice\n" +
+            "• Smart Signal\n" +
+            "• Evidence Review\n" +
+            "• Progress Tracking\n" +
+            "• Quest Guidance",
+            13,TEXT));
+
         add(c);
     }
-                   }
+}
