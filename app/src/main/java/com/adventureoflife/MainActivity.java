@@ -3,175 +3,192 @@ package com.adventureoflife;
 import android.app.Activity;
 import android.os.Bundle;
 import android.graphics.Color;
+import android.graphics.drawable.GradientDrawable;
 import android.view.Gravity;
 import android.view.View;
 import android.widget.*;
 
 public class MainActivity extends Activity {
+    final int BG = Color.rgb(3,7,13);
+    final int PANEL = Color.rgb(8,18,29);
+    final int PANEL2 = Color.rgb(11,27,41);
+    final int CYAN = Color.rgb(0,229,255);
+    final int TEXT = Color.rgb(231,250,255);
+    final int MUTED = Color.rgb(125,165,180);
+    final int VIOLET = Color.rgb(151,90,255);
 
-    LinearLayout screen;
+    LinearLayout root, content, nav;
+    TextView title, cold;
+    int page = 0;
 
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        showHome();
+    @Override public void onCreate(Bundle b) {
+        super.onCreate(b);
+        buildShell();
+        showPage(0);
     }
 
-    TextView title(String text) {
+    TextView tv(String s, float sp, int color) {
         TextView t = new TextView(this);
-        t.setText(text);
-        t.setTextColor(Color.CYAN);
-        t.setTextSize(26);
-        t.setGravity(Gravity.CENTER);
-        t.setPadding(10,30,10,30);
+        t.setText(s); t.setTextSize(sp); t.setTextColor(color);
+        t.setPadding(0, 3, 0, 3);
         return t;
     }
 
-    Button menu(String text) {
-        Button b = new Button(this);
-        b.setText(text);
-        b.setTextSize(16);
-        return b;
+    GradientDrawable bg(int color, int stroke) {
+        GradientDrawable g = new GradientDrawable();
+        g.setColor(color); g.setCornerRadius(18);
+        g.setStroke(1, stroke); return g;
     }
 
-    void base(String name) {
-        screen = new LinearLayout(this);
-        screen.setOrientation(LinearLayout.VERTICAL);
-        screen.setPadding(25,25,25,25);
-        screen.setBackgroundColor(Color.rgb(8,12,18));
-
-        screen.addView(title("⚔ ADVENTURE OF LIFE"));
-        screen.addView(title(name));
-
-        setContentView(screen);
+    LinearLayout card() {
+        LinearLayout c = new LinearLayout(this);
+        c.setOrientation(LinearLayout.VERTICAL);
+        c.setPadding(18,16,18,16);
+        c.setBackground(bg(PANEL, Color.rgb(30,91,112)));
+        LinearLayout.LayoutParams p = new LinearLayout.LayoutParams(-1,-2);
+        p.setMargins(0,0,0,12); c.setLayoutParams(p);
+        return c;
     }
 
-    void showHome() {
-        base("SYSTEM CORE");
+    void buildShell() {
+        root = new LinearLayout(this);
+        root.setOrientation(LinearLayout.VERTICAL);
+        root.setBackgroundColor(BG);
 
-        Button status = menu("STATUS WINDOW");
-        Button quest = menu("QUEST BOARD");
-        Button job = menu("JOB SYSTEM");
-        Button skill = menu("SKILL TREE");
-        Button inventory = menu("INVENTORY");
-        Button map = menu("ADVENTURE MAP");
-        Button vika = menu("VIKA AI CORE");
+        LinearLayout top = new LinearLayout(this);
+        top.setGravity(Gravity.CENTER_VERTICAL);
+        top.setPadding(16,12,14,10);
 
-        screen.addView(status);
-        screen.addView(quest);
-        screen.addView(job);
-        screen.addView(skill);
-        screen.addView(inventory);
-        screen.addView(map);
-        screen.addView(vika);
+        LinearLayout left = new LinearLayout(this);
+        left.setOrientation(LinearLayout.VERTICAL);
+        TextView kicker = tv("ADVENTURE OF LIFE // SYSTEM", 10, CYAN);
+        title = tv("SYSTEM CORE", 20, TEXT);
+        left.addView(kicker); left.addView(title);
+        top.addView(left, new LinearLayout.LayoutParams(0,-2,1));
 
-        status.setOnClickListener(v -> showStatus());
-        quest.setOnClickListener(v -> showQuest());
-        job.setOnClickListener(v -> showJob());
-        skill.setOnClickListener(v -> showSkill());
-        inventory.setOnClickListener(v -> showInventory());
-        map.setOnClickListener(v -> showMap());
-        vika.setOnClickListener(v -> showVika());
+        cold = tv("◉  COLD\nUNKNOWN", 11, Color.rgb(255,215,90));
+        cold.setGravity(Gravity.CENTER);
+        cold.setPadding(10,4,10,4);
+        cold.setBackground(bg(Color.rgb(38,31,8), Color.rgb(150,120,35)));
+        top.addView(cold, new LinearLayout.LayoutParams(92,56));
+        root.addView(top);
+
+        ScrollView scroll = new ScrollView(this);
+        content = new LinearLayout(this);
+        content.setOrientation(LinearLayout.VERTICAL);
+        content.setPadding(14,4,14,90);
+        scroll.addView(content);
+        root.addView(scroll, new LinearLayout.LayoutParams(-1,0,1));
+
+        nav = new LinearLayout(this);
+        nav.setPadding(8,7,8,8);
+        nav.setGravity(Gravity.CENTER);
+        nav.setBackgroundColor(Color.rgb(5,12,20));
+        String[] labels = {"⌂\nSYSTEM","♢\nSTATUS","✦\nQUEST","⚚\nSKILL","◉\nVIKA"};
+        for (int i=0;i<labels.length;i++) {
+            final int idx=i;
+            Button b = new Button(this);
+            b.setText(labels[i]); b.setTextSize(10); b.setTextColor(TEXT);
+            b.setAllCaps(false); b.setPadding(2,0,2,0);
+            b.setBackground(bg(Color.rgb(7,24,36), Color.rgb(31,89,108)));
+            b.setOnClickListener(v -> showPage(idx));
+            nav.addView(b, new LinearLayout.LayoutParams(0,62,1));
+        }
+        root.addView(nav);
+        setContentView(root);
     }
 
-    void info(String text) {
-        TextView t = new TextView(this);
-        t.setText(text);
-        t.setTextColor(Color.WHITE);
-        t.setTextSize(17);
-        t.setPadding(15,20,15,20);
-        screen.addView(t);
+    void add(View v) { content.addView(v); }
+
+    TextView heading(String s) {
+        TextView h = tv(s, 11, CYAN);
+        h.setLetterSpacing(.12f);
+        h.setPadding(2,8,2,10);
+        return h;
     }
 
-    void back() {
-        Button b = menu("← SYSTEM");
-        screen.addView(b);
-        b.setOnClickListener(v -> showHome());
+    void showPage(int p) {
+        page=p; content.removeAllViews();
+        String[] names={"SYSTEM CORE","STATUS WINDOW","QUEST BOARD","SKILL TREE","VIKA AI CORE"};
+        title.setText(names[p]);
+
+        if(p==0) home();
+        if(p==1) status();
+        if(p==2) quests();
+        if(p==3) skill();
+        if(p==4) vika();
     }
 
-    void showStatus() {
-        base("STATUS WINDOW");
-        info("PLAYER : Franz Alche\n\n"
-                + "TITLE : Elite Zero Hour\n"
-                + "RANK : E\n"
-                + "LEVEL : 02\n"
-                + "EXP : 87 / 150\n\n"
-                + "CLASS\n"
-                + "Alchemist / Assassin / Trader\n\n"
-                + "REAL STAT\n"
-                + "STR : ?\nVIT : ?\nAGI : ?\nDEX : ?\n"
-                + "INT : OBSERVED");
-        back();
+    void home() {
+        LinearLayout hero=card(); hero.setGravity(Gravity.CENTER);
+        TextView crest=tv("◇\nAZ",30,CYAN); crest.setGravity(Gravity.CENTER);
+        crest.setPadding(0,8,0,8); hero.addView(crest);
+        TextView n=tv("FRANZ ALCHE",24,TEXT); n.setGravity(Gravity.CENTER); hero.addView(n);
+        TextView sub=tv("ELITE ZERO HOUR  •  RANK E",12,MUTED); sub.setGravity(Gravity.CENTER); hero.addView(sub);
+        add(hero);
+
+        LinearLayout prog=card();
+        prog.addView(heading("PLAYER CORE"));
+        prog.addView(tv("LEVEL   02",17,TEXT));
+        prog.addView(tv("EXP     87 / 150",14,MUTED));
+        ProgressBar pb=new ProgressBar(this,null,android.R.attr.progressBarStyleHorizontal);
+        pb.setMax(150); pb.setProgress(87); prog.addView(pb,new LinearLayout.LayoutParams(-1,12));
+        prog.addView(tv("Alchemist  /  Assassin  /  Trader [Novice]",12,MUTED));
+        add(prog);
+
+        LinearLayout rules=card(); rules.addView(heading("SYSTEM PRINCIPLES"));
+        rules.addView(tv("REALITY > FANTASY\nLEVEL = PROOF\nCLAIM ≠ REAL\nFAILURE = DATA\nREAL STAT = MEASURED",13,TEXT));
+        add(rules);
     }
 
-    void showQuest() {
-        base("QUEST BOARD");
-        info("ACTIVE QUESTS\n\n"
-                + "🔴 OPERATION: RENTENIR ZERO\n"
-                + "🌿 HERBAL HUNT\n"
-                + "📈 OB REJECTION BACKTEST\n"
-                + "🧠 ORDER & DISCIPLINE\n"
-                + "🚭 SMOKE BREAKER\n\n"
-                + "RULE : EVIDENCE → PROGRESS");
-        back();
+    void status() {
+        LinearLayout c=card(); c.addView(heading("PLAYER"));
+        c.addView(tv("FRANZ ALCHE",24,TEXT));
+        c.addView(tv("ELITE ZERO HOUR  •  RANK E  •  LEVEL 02",12,MUTED));
+        c.addView(tv("Alchemist / Assassin / Trader [Novice]",13,TEXT));
+        add(c);
+
+        LinearLayout s=card(); s.addView(heading("REAL STAT"));
+        String[] rows={"STR    ?    UNMEASURED","VIT    ?    UNMEASURED","AGI    ?    UNMEASURED",
+                "DEX    ?    UNMEASURED","BAL    ?    UNMEASURED","MOB    ?    UNMEASURED",
+                "INT    OBSERVED","WIS    ?    UNMEASURED","PER    ?    UNMEASURED","FOC    ?    UNMEASURED"};
+        for(String r:rows) s.addView(tv(r,13,TEXT));
+        s.addView(tv("\nRULE: unmeasured ≠ 0",11,MUTED)); add(s);
     }
 
-    void showJob() {
-        base("JOB SYSTEM");
-        info("TARGET JOB\n\n"
-                + "Trader\n"
-                + "Alchemist\n"
-                + "Assassin\n\n"
-                + "JOB LEVEL = PROOF\n"
-                + "Skill → Practice → Evidence → Test → Unlock");
-        back();
+    void quests() {
+        LinearLayout q=card(); q.addView(heading("ACTIVE QUEST POOL"));
+        String[] qs={
+            "🔴 OPERATION: RENTENIR ZERO\nDebt principal Rp3.000.000 → Rp0",
+            "⚗️ WHY DO WE AGE?\nElixir Research ~80% • Node 03",
+            "🌿 HERBAL HUNT #01\nIdentify candidate plant with evidence",
+            "📈 OB REJECTION BACKTEST #10\nProgress 9/20 • 3W / 5L / 1BE",
+            "🧠 ORDER & DISCIPLINE\nMind Quest • 🟡",
+            "🚭 SMOKE BREAKER\n30-minute interval • Quest Mode"
+        };
+        for(String x:qs) {
+            TextView t=tv(x,13,TEXT); t.setPadding(4,10,4,10); q.addView(t);
+        }
+        q.addView(tv("\nQUEST BOARD = POOL\nExecution is managed through Quest Management / Active Rotation.",11,MUTED));
+        add(q);
     }
 
-    void showSkill() {
-        base("SKILL TREE");
-        info("🟢 RISK MANAGEMENT\n"
-                + "🟢 OB REJECTION Lv.1\n"
-                + "🟢 ALCHEMIST KNOWLEDGE Lv.1\n"
-                + "🟡 BACKTESTING MASTERY\n"
-                + "🔒 BREAKOUT & RETEST\n\n"
-                + "SP : 0");
-        back();
+    void skill() {
+        LinearLayout s=card(); s.addView(heading("SKILL TREE"));
+        String[] rows={"🟢 Risk Management","🟢 OB Rejection Analysis Lv.1","🟢 Alchemist Ingredient Knowledge Lv.1",
+                "🟡 Backtesting Mastery — 9/20","🔒 Breakout & Retest","🟡 Discipline","🟡 Patience","🟡 Failure Analysis"};
+        for(String r:rows) s.addView(tv(r,14,TEXT));
+        s.addView(tv("\nSP  0\n\nLEARN → PRACTICE → EVIDENCE → TEST → UNLOCK",12,MUTED));
+        add(s);
     }
 
-    void showInventory() {
-        base("INVENTORY");
-        info("EQUIPMENT\n\n"
-                + "◇ Clear Quartz Prism\n"
-                + "◇ Hematite Ring\n"
-                + "◇ Silver 925 / Platinum 18K\n\n"
-                + "COLD : UNKNOWN");
-        back();
+    void vika() {
+        LinearLayout c=card(); c.setGravity(Gravity.CENTER_HORIZONTAL);
+        c.addView(tv("◉",52,CYAN));
+        c.addView(tv("VIKA",28,TEXT));
+        c.addView(tv("SYSTEM / GAME MASTER",12,CYAN));
+        c.addView(tv("\nCORE STATUS: LOCAL PLACEHOLDER",13,MUTED));
+        c.addView(tv("\nPlanned modules:\n• OpenAI Brain\n• Voice\n• Smart Signal\n• Evidence Review\n• Progress Tracking\n• Quest Guidance",13,TEXT));
+        add(c);
     }
-
-    void showMap() {
-        base("ADVENTURE MAP");
-        info("WORLD : KALIMANTAN\n\n"
-                + "📍 SAWIT FRONTIER\n"
-                + "└─ TOXION\n"
-                + "   └─ ECONOMIC BIND\n\n"
-                + "NEXT OBJECTIVE\n"
-                + "ESCAPE TOXION");
-        back();
-    }
-
-    void showVika() {
-        base("VIKA AI CORE");
-        info("VIKA\n\n"
-                + "SYSTEM / GAME MASTER\n\n"
-                + "STATUS : OFFLINE AI PLACEHOLDER\n\n"
-                + "CORE FUNCTIONS\n"
-                + "• Quest Generation\n"
-                + "• Quest Analysis\n"
-                + "• Evidence Review\n"
-                + "• Progress Tracking\n"
-                + "• Skill Guidance\n"
-                + "• Job Guidance\n\n"
-                + "FUTURE : OPENAI API");
-        back();
-    }
-}
+                   }
