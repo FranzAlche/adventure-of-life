@@ -95,7 +95,7 @@ public class MainActivity extends Activity {
         LinearLayout opening = new LinearLayout(this);
         opening.setOrientation(LinearLayout.VERTICAL);
         opening.setGravity(Gravity.CENTER);
-        opening.setPadding(28, 40, 28, 30);
+        opening.setPadding(28, 58, 28, 34);
         opening.setBackgroundColor(BG);
 
         TextView small = tv("SYSTEM INITIALIZATION", 12, CYAN);
@@ -150,13 +150,18 @@ public class MainActivity extends Activity {
     }
 
     void buildShell() {
+        getWindow().setStatusBarColor(BG);
+        getWindow().setNavigationBarColor(Color.BLACK);
+        if (android.os.Build.VERSION.SDK_INT >= 30) {
+            getWindow().setDecorFitsSystemWindows(true);
+        }
         root = new LinearLayout(this);
         root.setOrientation(LinearLayout.VERTICAL);
         root.setBackgroundColor(BG);
 
         LinearLayout top = new LinearLayout(this);
         top.setGravity(Gravity.CENTER_VERTICAL);
-        top.setPadding(16, 12, 14, 10);
+        top.setPadding(16, 34, 14, 12);
 
         LinearLayout left = new LinearLayout(this);
         left.setOrientation(LinearLayout.VERTICAL);
@@ -165,7 +170,7 @@ public class MainActivity extends Activity {
             tv("ADVENTURE OF LIFE // SYSTEM", 12, CYAN);
         kicker.setLetterSpacing(.06f);
 
-        title = tv("SYSTEM CORE", 25, TEXT);
+        title = tv("SYSTEM CORE", 29, TEXT);
         title.setTypeface(null, android.graphics.Typeface.BOLD);
 
         left.addView(kicker);
@@ -189,7 +194,7 @@ public class MainActivity extends Activity {
 
         content = new LinearLayout(this);
         content.setOrientation(LinearLayout.VERTICAL);
-        content.setPadding(14, 6, 14, 104);
+        content.setPadding(14, 8, 14, 112);
 
         scroll.addView(content);
 
@@ -197,7 +202,7 @@ public class MainActivity extends Activity {
             new LinearLayout.LayoutParams(-1,0,1));
 
         nav = new LinearLayout(this);
-        nav.setPadding(8, 6, 8, 8);
+        nav.setPadding(8, 8, 8, 10);
         nav.setGravity(Gravity.CENTER);
         nav.setBackgroundColor(Color.rgb(5,12,20));
 
@@ -212,14 +217,14 @@ public class MainActivity extends Activity {
         for (int i = 0; i < labels.length; i++) {
             final int idx = i;
 
-            Button b = actionButton(labels[i], 10);
+            Button b = actionButton(labels[i], 12);
             b.setOnClickListener(v -> {
                 clickSound();
                 showPage(idx);
             });
 
             LinearLayout.LayoutParams bp =
-                new LinearLayout.LayoutParams(0, 58, 1);
+                new LinearLayout.LayoutParams(0, 70, 1);
             bp.setMargins(3, 0, 3, 0);
             nav.addView(b, bp);
         }
@@ -229,7 +234,7 @@ public class MainActivity extends Activity {
         // Keep the navigation bar above Android's system area.
         root.setOnApplyWindowInsetsListener((v, insets) -> {
             int bottom = insets.getSystemWindowInsetBottom();
-            nav.setPadding(8, 6, 8, 8 + bottom);
+            nav.setPadding(8, 8, 8, 10 + bottom);
             return insets;
         });
 
@@ -452,4 +457,4 @@ public class MainActivity extends Activity {
 
         add(c);
     }
-                         }
+            }
