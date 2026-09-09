@@ -24,6 +24,7 @@ public class MainActivity extends Activity {
 
     LinearLayout root, content, nav;
     TextView title, cold;
+    EditText commandInput;
     ToneGenerator tone;
     int page = 0;
 
@@ -442,19 +443,99 @@ public class MainActivity extends Activity {
             12, CYAN));
 
         c.addView(tv(
-            "\nCORE STATUS: LOCAL PLACEHOLDER",
+            "\nCORE STATUS: LOCAL",
             13, MUTED));
 
         c.addView(tv(
-            "\nPlanned modules:\n" +
-            "• OpenAI Brain\n" +
-            "• Voice\n" +
-            "• Smart Signal\n" +
-            "• Evidence Review\n" +
-            "• Progress Tracking\n" +
-            "• Quest Guidance",
-            13, TEXT));
+            "\nLOCAL COMMAND ENGINE",
+            12, CYAN));
+
+        commandInput = new EditText(this);
+        commandInput.setSingleLine(true);
+        commandInput.setHint("Ketik perintah...");
+        commandInput.setHintTextColor(MUTED);
+        commandInput.setTextColor(TEXT);
+        commandInput.setTextSize(14);
+        commandInput.setPadding(14, 4, 14, 4);
+        commandInput.setBackground(bg(Color.rgb(7,24,36), BORDER));
+
+        c.addView(commandInput,
+            new LinearLayout.LayoutParams(-1, 54));
+
+        Button send = actionButton("▶  EXECUTE", 13);
+        send.setTextColor(CYAN);
+
+        c.addView(send,
+            new LinearLayout.LayoutParams(-1, 54));
+
+        TextView response = tv(
+            "\nVIKA READY.\n" +
+            "Contoh:\n" +
+            "• buka status\n" +
+            "• buka quest\n" +
+            "• buka financial board",
+            13, TEXT);
+        response.setPadding(4, 12, 4, 4);
+        c.addView(response);
+
+        send.setOnClickListener(vw -> {
+            clickSound();
+
+            String cmd = commandInput.getText().toString()
+                .trim().toLowerCase();
+
+            if (cmd.contains("financial") ||
+                cmd.contains("keuangan") ||
+                cmd.contains("finansial")) {
+
+                response.setText(
+                    "VIKA > FINANCIAL BOARD\n\n" +
+                    "CURRENT BON CYCLE: Rp223.000\n" +
+                    "OLD OUTSTANDING WARUNG: Rp251.000\n" +
+                    "COMBINED OBLIGATION: Rp474.000\n\n" +
+                    "MODE: FINANCIAL DATA");
+
+            } else if (cmd.contains("status")) {
+
+                response.setText(
+                    "VIKA > STATUS WINDOW\n\n" +
+                    "FRANZ ALCHE\n" +
+                    "LEVEL 02\n" +
+                    "EXP 87 / 150\n" +
+                    "RANK E\n" +
+                    "CLASS: Alchemist / Assassin / Trader [Novice]");
+
+            } else if (cmd.contains("quest")) {
+
+                response.setText(
+                    "VIKA > QUEST BOARD\n\n" +
+                    "ACTIVE QUEST POOL\n" +
+                    "• Operation Rentenir Zero\n" +
+                    "• Why Do We Age?\n" +
+                    "• Herbal Hunt #01\n" +
+                    "• OB Rejection Backtest #11\n" +
+                    "• Order & Discipline\n" +
+                    "• Smoke Breaker");
+
+            } else if (cmd.isEmpty()) {
+
+                response.setText(
+                    "VIKA > COMMAND EMPTY\n\n" +
+                    "Masukkan perintah.");
+
+            } else {
+
+                response.setText(
+                    "VIKA > COMMAND NOT RECOGNIZED\n\n" +
+                    "Coba:\n" +
+                    "• buka status\n" +
+                    "• buka quest\n" +
+                    "• buka financial board");
+            }
+
+            commandInput.setText("");
+        });
 
         add(c);
     }
-            }
+}
