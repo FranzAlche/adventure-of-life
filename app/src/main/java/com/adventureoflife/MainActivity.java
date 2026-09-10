@@ -1245,9 +1245,14 @@ content.addView(response);
     Button execute = new Button(this);
     execute.setText("EXECUTE");
 
-    execute.setOnClickListener(view -> {
-        String command = commandInput.getText().toString().trim();
-        executeCommand(command, response);
+execute.setOnClickListener(view -> {
+    String command = commandInput.getText().toString();
+
+    executeCommand(command, response);
+
+    commandInput.setText("");
+    commandInput.requestFocus();
+});
 
     });
 
