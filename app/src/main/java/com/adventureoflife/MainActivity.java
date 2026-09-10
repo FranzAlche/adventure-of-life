@@ -1213,4 +1213,17 @@ public class MainActivity extends Activity {
     "- beli ikan 72k"
 );
 }
+void vika() {
+    TextView v = tv(
+        "VIKA AI CORE\n\n" +
+        "SYSTEM LINK: ACTIVE\n" +
+        "COMMAND ENGINE: ACTIVE\n" +
+        "DATA ENGINE: ACTIVE\n\n" +
+        "Ketik command untuk berkomunikasi dengan VIKA.",
+        18,
+        TEXT
+    );
+
+    content.addView(v);
+}
 }
