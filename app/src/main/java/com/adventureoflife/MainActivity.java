@@ -1240,7 +1240,8 @@ void vika() {
 
     execute.setOnClickListener(view -> {
         String command = commandInput.getText().toString().trim();
-        executeCommand(command);
+        executeCommand(command, response);
+
     });
 
     content.addView(execute);
