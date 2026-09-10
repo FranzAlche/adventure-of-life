@@ -1254,8 +1254,6 @@ execute.setOnClickListener(view -> {
     commandInput.requestFocus();
 });
 
-    });
-
     content.addView(execute);
 }
 }
