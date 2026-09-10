@@ -1226,6 +1226,13 @@ void vika() {
     );
 
     content.addView(v);
+TextView response = tv(
+    "",
+    18,
+    TEXT
+);
+
+content.addView(response);
 
     EditText commandInput = new EditText(this);
     commandInput.setHint("Ketik command...");
