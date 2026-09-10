@@ -1212,3 +1212,5 @@ public class MainActivity extends Activity {
     "- financial\n" +
     "- beli ikan 72k"
 );
+}
+}
