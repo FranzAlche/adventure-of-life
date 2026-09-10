@@ -1205,9 +1205,10 @@ public class MainActivity extends Activity {
 
         // UNKNOWN
         response.setText(
-
-            "VIKA > COMMAND NOT RECOGNIZED\n\n" +
-
-            "Coba:\n" +
-
-            "
+    "VIKA > COMMAND NOT RECOGNIZED\n\n" +
+    "Coba:\n" +
+    "- status\n" +
+    "- quest\n" +
+    "- financial\n" +
+    "- beli ikan 72k"
+);
