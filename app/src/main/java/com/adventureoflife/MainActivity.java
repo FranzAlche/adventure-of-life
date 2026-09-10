@@ -1214,16 +1214,35 @@ public class MainActivity extends Activity {
 );
 }
 void vika() {
+
     TextView v = tv(
-        "VIKA AI CORE\n\n" +
-        "SYSTEM LINK: ACTIVE\n" +
-        "COMMAND ENGINE: ACTIVE\n" +
-        "DATA ENGINE: ACTIVE\n\n" +
-        "Ketik command untuk berkomunikasi dengan VIKA.",
-        18,
-        TEXT
+            "VIKA AI CORE\n\n" +
+            "SYSTEM LINK: ACTIVE\n" +
+            "COMMAND ENGINE: ACTIVE\n" +
+            "DATA ENGINE: ACTIVE\n\n" +
+            "Ketik command untuk berkomunikasi dengan VIKA.",
+            18,
+            TEXT
     );
 
     content.addView(v);
+
+    EditText commandInput = new EditText(this);
+    commandInput.setHint("Ketik command...");
+    commandInput.setTextColor(Color.WHITE);
+    commandInput.setHintTextColor(Color.GRAY);
+    commandInput.setSingleLine(false);
+
+    content.addView(commandInput);
+
+    Button execute = new Button(this);
+    execute.setText("EXECUTE");
+
+    execute.setOnClickListener(view -> {
+        String command = commandInput.getText().toString().trim();
+        executeCommand(command);
+    });
+
+    content.addView(execute);
 }
 }
